@@ -8,45 +8,72 @@ public class FCFS {
 	int tamamlanmaSuresi=0;
 	float bekleme=0;
 	float ortBekleme;
-		
+
+	int [] tamamlanmaZamani;
+	
 	public FCFS(int prosesSayisi, int [][] prosesMatris)
 	{
+		System.out.println("FCFS ALGORITMASI : ");
+		
 		this.prosesSayisi=prosesSayisi;
 		sort(prosesMatris);
 		
-//		int [] varisSure = new int[prosesSayisi];
-//		int [] patlamaZamani=new int[prosesSayisi];
-//		int [] beklemeSuresi=new int[prosesSayisi];
-//		
-//		for (int i = 0; i < prosesSayisi; i++) 
-//		{
-//			varisSure[i] = prosesMatris[i][0];
-//			System.out.println(prosesMatris[i][0]);
-//			patlamaZamani[i] = prosesMatris[i][1]; 
-//		}
-//		
-//		
-//		
-//		
-//		beklemeSuresi[0] = 0;
-//		for (int i = 1; i < prosesSayisi; i++) 
-//		{
-//			beklemeSuresi[i] = patlamaZamani[i-1] + beklemeSuresi[i-1];
-//		}
-//		
-//		for (int i : beklemeSuresi) 
-//		{
-//			bekleme += i;
-//		}
-//		
-//	
-//		ortBekleme = bekleme / prosesSayisi;
-//      System.out.println("ort bekleme : "+ortBekleme);
+		int [] varisSure = new int[prosesSayisi];
+		int [] patlamaZamani=new int[prosesSayisi];
+		int [] beklemeSuresi=new int[prosesSayisi];
 		
-		int a = totalWaitingTime(prosesMatris,prosesSayisi);
-		System.out.println(a);
+		for (int i = 0; i < prosesSayisi; i++) 
+		{
+			varisSure[i] = prosesMatris[i][0];
+
+			patlamaZamani[i] = prosesMatris[i][1]; 
+		}
+
 		
-		System.out.println(avarageTime(a, prosesSayisi));
+		int toplamBekleme;
+		toplamBekleme = totalWaitingTime(prosesMatris,prosesSayisi);
+		
+		
+		//System.out.println(avarageTime(a, prosesSayisi));
+		
+        
+        int donusZamanlari[] = new int[prosesSayisi];
+       
+        int toplamDonusZamani = 0;
+        
+
+        
+        
+      //Bekleme zamanlarýnýn hesaplanmasý.
+        for (int i = 1; i < prosesSayisi; i++) {
+        	beklemeSuresi[i] = patlamaZamani[i - 1] + beklemeSuresi[i - 1];
+        }
+        
+        
+        //Donus zamanlarýnýn hesaplanmasý.
+        for (int i = 0; i < prosesSayisi; i++) {
+        	donusZamanlari[i] = patlamaZamani[i] + beklemeSuresi[i];
+        }
+        
+        tamamlanmaZamani = new int[prosesSayisi];
+        for (int i = 0; i< prosesSayisi; i++){
+        	tamamlanmaZamani[i] = donusZamanlari[i] + varisSure[i];
+        }
+		
+		System.out.println("Varýþ Zamaný "+"Patlama Zamaný " + " Bekleme Zamaný " + " Donus Zamaný"+ " Tamamlanma Zamani");
+	      
+        for (int i = 0; i < prosesSayisi; i++) {
+           // toplamBekleme = toplamBekleme + beklemeSuresi[i];
+            toplamDonusZamani = toplamDonusZamani + donusZamanlari[i];
+            System.out.println(varisSure[i]+ "\t\t " +patlamaZamani[i] + "\t\t " + beklemeSuresi[i]
+                             + "\t\t" + donusZamanlari[i]+ "\t\t "+tamamlanmaZamani[i]);
+        }
+      
+        System.out.println("Ortalama Bekleme Zamaný = " +
+                          (float)toplamBekleme / (float)prosesSayisi);
+        System.out.println("Ortalama Dönüþ Zamaný = " +
+                           (float)toplamDonusZamani / (float)prosesSayisi);
+        System.out.println("###########################################################");
 		
 	}
 	
@@ -110,16 +137,7 @@ public class FCFS {
 				
 		}
 		
-//	    for (int b = 0; b < prosesSayisi; b++) 
-//	    {
-//			
-//			for (int m = 0; m < 1; m++) 
-//			{
-//				System.out.println("-----------------------------");
-//				System.out.println(array[b][m]+" "+array[b][m+1]);
-//			}
-//			
-//		}
+
 	}
 	
 }
