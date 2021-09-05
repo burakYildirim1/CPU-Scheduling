@@ -2,70 +2,70 @@ package operating_systems_homework;
 
 public class SJF_NP {
 
-	int prosesSayisi;
-	float bekleme = 0;
-	float ortBekleme;
-	int[] tamamlanmaZamani;
+	int processNumb;
+	float wait = 0;
+	float averageWaitingTime;
+	int[] completionTimeMatrix;
 
-	public SJF_NP(int prosesSayisi, int[][] prosesMatris) {
-		System.out.println("SJF_NP ALGORITMASI : ");
+	public SJF_NP(int processNumb, int[][] processMatrix) {
+		System.out.println("SJF_NP Algorithm : ");
 
-		this.prosesSayisi = prosesSayisi;
-		sirala(prosesMatris);
+		this.processNumb = processNumb;
+		sort(processMatrix);
 
-		int[] varisSure = new int[prosesSayisi];
-		int[] patlamaZamani = new int[prosesSayisi];
-		int[] beklemeSuresi = new int[prosesSayisi];
+		int[] arrivalTimeMatrix = new int[processNumb];
+		int[] burstTimeMatrix = new int[processNumb];
+		int[] waitingTimeMatrix = new int[processNumb];
 
-		int donusZamanlari[] = new int[prosesSayisi];
-		tamamlanmaZamani = new int[prosesSayisi];
-		int toplamBekleme = 0;
-		int toplamDonusZamani = 0;
+		int turnAroundTimeMatrix[] = new int[processNumb];
+		completionTimeMatrix = new int[processNumb];
+		int totalWaiting = 0;
+		int totalTurnAroundTime = 0;
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			varisSure[i] = prosesMatris[i][0];
-			patlamaZamani[i] = prosesMatris[i][1];
+		for (int i = 0; i < processNumb; i++) {
+			arrivalTimeMatrix[i] = processMatrix[i][0];
+			burstTimeMatrix[i] = processMatrix[i][1];
 		}
 
-		beklemeSuresi[0] = 0;
-		for (int i = 1; i < prosesSayisi; i++) {
-			beklemeSuresi[i] = patlamaZamani[i - 1] + beklemeSuresi[i - 1];
+		waitingTimeMatrix[0] = 0;
+		for (int i = 1; i < processNumb; i++) {
+			waitingTimeMatrix[i] = burstTimeMatrix[i - 1] + waitingTimeMatrix[i - 1];
 		}
 
-		for (int i : beklemeSuresi) {
-			bekleme += i;
+		for (int i : waitingTimeMatrix) {
+			wait += i;
 		}
 
-		// Donus zamanlarýnýn hesaplanmasý.
-		for (int i = 0; i < prosesSayisi; i++) {
-			donusZamanlari[i] = patlamaZamani[i] + beklemeSuresi[i];
+		// Calculation of turn around times
+		for (int i = 0; i < processNumb; i++) {
+			turnAroundTimeMatrix[i] = burstTimeMatrix[i] + waitingTimeMatrix[i];
 		}
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			tamamlanmaZamani[i] = donusZamanlari[i] + varisSure[i];
+		for (int i = 0; i < processNumb; i++) {
+			completionTimeMatrix[i] = turnAroundTimeMatrix[i] + arrivalTimeMatrix[i];
 		}
 
-		System.out.println("Patlama Zamaný " + " Bekleme Zamaný " + " Donus Zamaný" + " Tamamlanma Zamani");
+		System.out.println("Burst Time " + " Waiting Time " + " Turn Around Time" + " Completion Time");
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			toplamBekleme = toplamBekleme + beklemeSuresi[i];
-			toplamDonusZamani = toplamDonusZamani + donusZamanlari[i];
-			System.out.println(patlamaZamani[i] + "\t\t " + beklemeSuresi[i] + "\t\t" + donusZamanlari[i] + "\t\t "
-					+ tamamlanmaZamani[i]);
+		for (int i = 0; i < processNumb; i++) {
+			totalWaiting = totalWaiting + waitingTimeMatrix[i];
+			totalTurnAroundTime = totalTurnAroundTime + turnAroundTimeMatrix[i];
+			System.out.println(burstTimeMatrix[i] + "\t\t " + waitingTimeMatrix[i] + "\t\t" + turnAroundTimeMatrix[i] + "\t\t "
+					+ completionTimeMatrix[i]);
 		}
 
-		System.out.println("Ortalama Bekleme Zamaný = " + (float) toplamBekleme / (float) prosesSayisi);
-		System.out.println("Ortalama Dönüþ Zamaný = " + (float) toplamDonusZamani / (float) prosesSayisi);
+		System.out.println("Average waiting time = " + (float) totalWaiting / (float) processNumb);
+		System.out.println("Average turn around time = " + (float) totalTurnAroundTime / (float) processNumb);
 		System.out.println("###########################################################");
 
 	}
 
-	public void sirala(int array[][]) {
+	public void sort(int array[][]) {
 		boolean sorted = false;
 		int temp;
 		int temp2;
 
-		for (int i = 0; i < prosesSayisi; i++) {
+		for (int i = 0; i < processNumb; i++) {
 
 			for (int j = 0; j < 1; j++) {
 

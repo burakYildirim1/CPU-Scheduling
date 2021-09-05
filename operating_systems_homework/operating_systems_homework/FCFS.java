@@ -2,63 +2,62 @@ package operating_systems_homework;
 
 public class FCFS {
 
-	int prosesSayisi;
+	int processNumb;
 
-	int toplamIslemSuresi = 0;
-	int tamamlanmaSuresi = 0;
-	float bekleme = 0;
-	float ortBekleme;
+	int totalProcessingTime = 0;
+	int completionTime = 0;
+	float wait = 0;
+	float averageWaitingTime;
 
-	int[] tamamlanmaZamani;
+	int[] completionTimeMatrix;
 
-	public FCFS(int prosesSayisi, int[][] prosesMatris) {
-		System.out.println("FCFS ALGORITMASI : ");
+	public FCFS(int processNumb, int[][] processMatrix) {
+		System.out.println("FCFS Algorithm : ");
 
-		this.prosesSayisi = prosesSayisi;
-		sirala(prosesMatris);
+		this.processNumb = processNumb;
+		sort(processMatrix);
 
-		int[] varisSure = new int[prosesSayisi];
-		int[] patlamaZamani = new int[prosesSayisi];
-		int[] beklemeSuresi = new int[prosesSayisi];
-		int donusZamanlari[] = new int[prosesSayisi];
-		tamamlanmaZamani = new int[prosesSayisi];
-		int toplamDonusZamani = 0;
+		int[] arrivalTimeMatrix = new int[processNumb];
+		int[] burstTimeMatrix = new int[processNumb];
+		int[] waitingTimeMatrix = new int[processNumb];
+		int turnAroundTimeMatrix[] = new int[processNumb];
+		completionTimeMatrix = new int[processNumb];
+		int totalTurnAroundTime = 0;
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			varisSure[i] = prosesMatris[i][0];
+		for (int i = 0; i < processNumb; i++) {
+			arrivalTimeMatrix[i] = processMatrix[i][0];
 
-			patlamaZamani[i] = prosesMatris[i][1];
+			burstTimeMatrix[i] = processMatrix[i][1];
 		}
 
-		int toplamBekleme;
-		toplamBekleme = totalWaitingTime(prosesMatris, prosesSayisi);
+		int totalWaiting;
+		totalWaiting = totalWaitingTime(processMatrix, processNumb);
 
-		// Bekleme zamanlarýnýn hesaplanmasý.
-		for (int i = 1; i < prosesSayisi; i++) {
-			beklemeSuresi[i] = patlamaZamani[i - 1] + beklemeSuresi[i - 1];
+		// calculation of waiting times
+		for (int i = 1; i < processNumb; i++) {
+			waitingTimeMatrix[i] = burstTimeMatrix[i - 1] + waitingTimeMatrix[i - 1];
 		}
 
-		// Donus zamanlarýnýn hesaplanmasý.
-		for (int i = 0; i < prosesSayisi; i++) {
-			donusZamanlari[i] = patlamaZamani[i] + beklemeSuresi[i];
+		// Calculation of turn around times
+		for (int i = 0; i < processNumb; i++) {
+			turnAroundTimeMatrix[i] = burstTimeMatrix[i] + waitingTimeMatrix[i];
 		}
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			tamamlanmaZamani[i] = donusZamanlari[i] + varisSure[i];
+		for (int i = 0; i < processNumb; i++) {
+			completionTimeMatrix[i] = turnAroundTimeMatrix[i] + arrivalTimeMatrix[i];
 		}
 
-		System.out.println(
-				"Varýþ Zamaný " + "Patlama Zamaný " + " Bekleme Zamaný " + " Donus Zamaný" + " Tamamlanma Zamani");
+		System.out
+				.println("Arrival Time " + "Burst Time " + " Waiting Time " + " Turn Around Time" + " Completion Time");
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			// toplamBekleme = toplamBekleme + beklemeSuresi[i];
-			toplamDonusZamani = toplamDonusZamani + donusZamanlari[i];
-			System.out.println(varisSure[i] + "\t\t " + patlamaZamani[i] + "\t\t " + beklemeSuresi[i] + "\t\t"
-					+ donusZamanlari[i] + "\t\t " + tamamlanmaZamani[i]);
+		for (int i = 0; i < processNumb; i++) {
+			totalTurnAroundTime = totalTurnAroundTime + turnAroundTimeMatrix[i];
+			System.out.println(arrivalTimeMatrix[i] + "\t\t " + burstTimeMatrix[i] + "\t\t " + waitingTimeMatrix[i]
+					+ "\t\t" + turnAroundTimeMatrix[i] + "\t\t " + completionTimeMatrix[i]);
 		}
 
-		System.out.println("Ortalama Bekleme Zamaný = " + (float) toplamBekleme / (float) prosesSayisi);
-		System.out.println("Ortalama Dönüþ Zamaný = " + (float) toplamDonusZamani / (float) prosesSayisi);
+		System.out.println("Average waiting time = " + (float) totalWaiting / (float) processNumb);
+		System.out.println("Average turn around time = " + (float) totalTurnAroundTime / (float) processNumb);
 		System.out.println("###########################################################");
 
 	}
@@ -78,12 +77,12 @@ public class FCFS {
 		return (double) sum / (double) len;
 	}
 
-	public void sirala(int array[][]) {
+	public void sort(int array[][]) {
 		boolean sorted = false;
 		int temp;
 		int temp2;
 
-		for (int i = 0; i < prosesSayisi; i++) {
+		for (int i = 0; i < processNumb; i++) {
 
 			for (int j = 0; j < 1; j++) {
 

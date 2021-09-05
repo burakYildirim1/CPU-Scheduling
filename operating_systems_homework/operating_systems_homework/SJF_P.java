@@ -3,73 +3,73 @@ package operating_systems_homework;
 import java.util.Scanner;
 
 class Process {
-	int patlamaZ;
-	int varisZ;
+	int burstTime;
+	int arrivalTime;
 
-	public Process(int patlamaZ, int varisZ) {
-		this.patlamaZ = patlamaZ;
-		this.varisZ = varisZ;
+	public Process(int burstTime, int arrivalTime) {
+		this.burstTime = burstTime;
+		this.arrivalTime = arrivalTime;
 	}
 }
 
 public class SJF_P {
 
-	static int prosesSayisi = 0;
-	static int[][] prosesMatris;
-	static int[] varisZamani;
-	static int[] patlamaZamanlari;
-	static int[] tamamlanmaZamani;
+	static int processNumb = 0;
+	static int[][] processMatrix;
+	static int[] arrivalTimeMatrix;
+	static int[] burstTimeMatrix;
+	static int[] completionTimeMatrix;
+	
 
-	public SJF_P(int prosesSayisi, int[][] prosesMatris) {
-		System.out.println("SJF_P ALGORITMASI : ");
+	public SJF_P(int processNumb, int[][] processMatrix) {
+		System.out.println("SJF_P Algorithm : ");
 
-		this.prosesSayisi = prosesSayisi;
-		this.prosesMatris = prosesMatris;
+		this.processNumb = processNumb;
+		this.processMatrix = processMatrix;
 
-		Process prosesler[] = new Process[prosesSayisi];
-		int[] patlamaZamani = new int[prosesSayisi];
-		varisZamani = new int[prosesSayisi];
+		Process processesMatrix[] = new Process[processNumb];
+		int[] burstTimeM = new int[processNumb];
+		arrivalTimeMatrix = new int[processNumb];
 
 		Scanner sc = new Scanner(System.in);
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			patlamaZamani[i] = prosesMatris[i][0];
-			varisZamani[i] = prosesMatris[i][1];
+		for (int i = 0; i < processNumb; i++) {
+			burstTimeM[i] = processMatrix[i][0];
+			arrivalTimeMatrix[i] = processMatrix[i][1];
 		}
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			prosesler[i] = new Process(varisZamani[i], patlamaZamani[i]);
+		for (int i = 0; i < processNumb; i++) {
+			processesMatrix[i] = new Process(arrivalTimeMatrix[i], burstTimeM[i]);
 		}
 
-		ortalamaZamaniBul(prosesler, prosesler.length);
+		findAverageTime(processesMatrix, processesMatrix.length);
 
 	}
 
-	// proseslerin bekleme zamanini bulan fonksiyon
-	static void beklemeZamaniBul(Process prosesler[], int prosesSayisi, int beklemeZamani[]) // proses matrisi, proses
-																								// sayisi, beklemeZamani
-																								// proses sayisi
-																								// boyutunda dizi
+	
+	static void findWaitingTime(Process processesMatrix[], int processNumb, int waitingTimeMatrix[]) 
+																							
+																								
 	{
-		patlamaZamanlari = new int[prosesSayisi];
+		burstTimeMatrix = new int[processNumb];
 
-		for (int i = 0; i < prosesSayisi; i++)
-			patlamaZamanlari[i] = prosesler[i].patlamaZ;
+		for (int i = 0; i < processNumb; i++)
+			burstTimeMatrix[i] = processesMatrix[i].burstTime;
 
-		int tamamMi = 0;
+		int complete  = 0;
 		int tempValue = 0;
-		int ekd = Integer.MAX_VALUE;
-		int enKisa = 0;
-		int bitisZamani;
+		int minm  = Integer.MAX_VALUE;
+		int shortest = 0;
+		int finishTime;
 		boolean flag = false;
 
-		// prosesler tamamlanana kadar
-		while (tamamMi != prosesSayisi) {
+		
+		while (complete  != processNumb) {
 
-			for (int j = 0; j < prosesSayisi; j++) {
-				if ((prosesler[j].varisZ <= tempValue) && (patlamaZamanlari[j] < ekd) && patlamaZamanlari[j] > 0) {
-					ekd = patlamaZamanlari[j];
-					enKisa = j;
+			for (int j = 0; j < processNumb; j++) {
+				if ((processesMatrix[j].arrivalTime <= tempValue) && (burstTimeMatrix[j] < minm ) && burstTimeMatrix[j] > 0) {
+					minm  = burstTimeMatrix[j];
+					shortest = j;
 					flag = true;
 				}
 			}
@@ -79,26 +79,24 @@ public class SJF_P {
 				continue;
 			}
 
-			patlamaZamanlari[enKisa]--;
+			burstTimeMatrix[shortest]--;
 
-			// en kucuk degerin guncellendigi yer
-			ekd = patlamaZamanlari[enKisa];
-			if (ekd == 0)
-				ekd = Integer.MAX_VALUE;
+			
+			minm  = burstTimeMatrix[shortest];
+			if (minm  == 0)
+				minm  = Integer.MAX_VALUE;
 
-			if (patlamaZamanlari[enKisa] == 0) {
+			if (burstTimeMatrix[shortest] == 0) {
 
-				tamamMi++;
+				complete ++;
 				flag = false;
 
-				// prosesin bitis zamanini bul
-				bitisZamani = tempValue + 1;
+				finishTime = tempValue + 1;
 
-				// bekleme zamani hesapla
-				beklemeZamani[enKisa] = bitisZamani - prosesler[enKisa].patlamaZ - prosesler[enKisa].varisZ;
+				waitingTimeMatrix[shortest] = finishTime - processesMatrix[shortest].burstTime - processesMatrix[shortest].arrivalTime;
 
-				if (beklemeZamani[enKisa] < 0) {
-					beklemeZamani[enKisa] = 0;
+				if (waitingTimeMatrix[shortest] < 0) {
+					waitingTimeMatrix[shortest] = 0;
 				}
 
 			}
@@ -107,41 +105,41 @@ public class SJF_P {
 		}
 	}
 
-	// donus zamani hesaplayan fonksiyon
-	static void donusZamaniHesapla(Process prosesler[], int prosesSayisi, int beklemeZamani[], int donusZamanlari[]) {
+	
+	static void findTurnAroundTime(Process processesMatrix[], int processNumb, int waitingTimeMatrix[], int turnAroundTimeMatrix[]) {
 
-		for (int i = 0; i < prosesSayisi; i++)
-			donusZamanlari[i] = prosesler[i].patlamaZ + beklemeZamani[i];
+		for (int i = 0; i < processNumb; i++)
+			turnAroundTimeMatrix[i] = processesMatrix[i].burstTime + waitingTimeMatrix[i];
 	}
 
-	// ortalama zamani hesaplayan fonksiyon
-	static void ortalamaZamaniBul(Process prosesler[], int prosesSayisi) {
-		int beklemeZamani[] = new int[prosesSayisi];
-		int donusZamanlari[] = new int[prosesSayisi];
-		int toplamBekleme = 0;
-		int toplamDonusZamani = 0;
+	
+	static void findAverageTime(Process processesMatrix[], int processNumb) {
+		int waitingTimeMatrix[] = new int[processNumb];
+		int turnAroundTimeMatrix[] = new int[processNumb];
+		int totalWaiting = 0;
+		int totalTurnAroundTime = 0;
 
-		beklemeZamaniBul(prosesler, prosesSayisi, beklemeZamani);
+		findWaitingTime(processesMatrix, processNumb, waitingTimeMatrix);
 
-		donusZamaniHesapla(prosesler, prosesSayisi, beklemeZamani, donusZamanlari);
+		findTurnAroundTime(processesMatrix, processNumb, waitingTimeMatrix, turnAroundTimeMatrix);
 
-		tamamlanmaZamani = new int[prosesSayisi];
-		for (int i = 0; i < prosesSayisi; i++) {
-			tamamlanmaZamani[i] = donusZamanlari[i] + prosesler[i].varisZ;
+		completionTimeMatrix = new int[processNumb];
+		for (int i = 0; i < processNumb; i++) {
+			completionTimeMatrix[i] = turnAroundTimeMatrix[i] + processesMatrix[i].arrivalTime;
 		}
 
 		System.out.println(
-				"Varýþ Zamaný " + "Patlama Zamaný " + " Bekleme Zamaný " + " Donus Zamani" + " Tamamlanma Zamani");
+				"Arrival Time " + "Burst Time " + " Waiting Time " + " Turn Around Time" + " Completion Time");
 
-		for (int i = 0; i < prosesSayisi; i++) {
-			toplamBekleme = toplamBekleme + beklemeZamani[i];
-			toplamDonusZamani = toplamDonusZamani + donusZamanlari[i];
-			System.out.println(prosesler[i].varisZ + "\t\t " + prosesler[i].patlamaZ + "\t\t " + beklemeZamani[i]
-					+ "\t\t" + donusZamanlari[i] + "\t\t " + tamamlanmaZamani[i]);
+		for (int i = 0; i < processNumb; i++) {
+			totalWaiting = totalWaiting + waitingTimeMatrix[i];
+			totalTurnAroundTime = totalTurnAroundTime + turnAroundTimeMatrix[i];
+			System.out.println(processesMatrix[i].arrivalTime + "\t\t " + processesMatrix[i].burstTime + "\t\t " + waitingTimeMatrix[i]
+					+ "\t\t" + turnAroundTimeMatrix[i] + "\t\t " + completionTimeMatrix[i]);
 		}
 
-		System.out.println("Ortalama Bekleme Zamaný = " + (float) toplamBekleme / (float) prosesSayisi);
-		System.out.println("Ortalama Dönüþ Zamaný = " + (float) toplamDonusZamani / (float) prosesSayisi);
+		System.out.println("Average waiting time = " + (float) totalWaiting / (float) processNumb);
+		System.out.println("Average turn around time = " + (float) totalTurnAroundTime / (float) processNumb);
 		System.out.println("###########################################################");
 	}
 
